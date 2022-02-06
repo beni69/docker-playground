@@ -1,0 +1,28 @@
+# complie with the `rust` image, and place the binary in a distroless image
+# doesn't need rust on the host, and the result image will be relatively small (~20MB+binary)
+# builder does some cache layer optimization, allowing for incremental compilation
+FROM rust:slim as builder
+
+ARG SERVICE_NAME=hello_rust
+
+RUN USER=root cargo new --bin /usr/src/${SERVICE_NAME}
+
+WORKDIR /usr/src/${SERVICE_NAME}
+
+COPY ./Cargo.toml ./Cargo.toml
+
+RUN cargo build --release \ 
+    && rm -rf src
+
+ADD . ./
+
+RUN rm ./target/release/deps/${SERVICE_NAME}* \
+    && cargo build --release
+
+FROM gcr.io/distroless/cc
+
+ARG SERVICE_NAME=hello_rust
+
+COPY --from=builder /usr/src/${SERVICE_NAME}/target/release/${SERVICE_NAME} /usr/local/bin/${SERVICE_NAME}
+
+CMD ["hello_rust"]

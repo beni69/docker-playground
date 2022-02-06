@@ -1,0 +1,17 @@
+# statically link and run on alpine linux
+# doesn't need rust on the host, and the result image will be really small (~5MB+binary)
+# note: musl libc may cause some problems
+
+FROM rust:slim AS builder
+
+RUN rustup target add x86_64-unknown-linux-musl
+RUN apt update && apt install -y musl-tools musl-dev
+RUN update-ca-certificates
+
+WORKDIR /src
+COPY . .
+RUN cargo build --target x86_64-unknown-linux-musl --release
+
+FROM alpine
+COPY --from=builder /src/target/x86_64-unknown-linux-musl/release/hello_rust /usr/local/bin/app
+CMD ["app"]
