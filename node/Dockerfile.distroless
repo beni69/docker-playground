@@ -1,0 +1,20 @@
+# builds using a regular node, and runs using a distroless node (debian) image
+# final image size is way smaller than the regular node image,
+# but it's roughly the same as an alpine image
+# and since alpine doesn't need multi-build I think that's easier to work with
+FROM node:lts as builder
+
+WORKDIR /app
+
+COPY package*.json .
+COPY yarn.lock .
+
+RUN yarn install
+
+COPY . .
+
+FROM gcr.io/distroless/nodejs
+WORKDIR /app
+COPY --from=builder /app /app
+
+CMD ["index.js"]

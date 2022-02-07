@@ -1,0 +1,15 @@
+# builds and runs using the full node debian image
+# very lagre image size
+# probably only useful if I need to easily install some external dependencies with apt
+FROM node:lts
+
+WORKDIR /app
+
+COPY package*.json .
+COPY yarn.lock .
+
+RUN yarn install
+
+COPY . .
+
+CMD ["yarn", "start"]

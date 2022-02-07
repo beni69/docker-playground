@@ -1,0 +1,13 @@
+{
+    "name": "node",
+    "version": "0.1.0",
+    "main": "index.js",
+    "author": "beni69 <beni@karesz.xyz> (https://github.com/beni69)",
+    "license": "MIT",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "express": "^4.17.2"
+    }
+}
