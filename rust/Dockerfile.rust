@@ -1,0 +1,12 @@
+FROM rust:slim
+
+WORKDIR /src
+
+RUN cargo init
+COPY Cargo.* .
+RUN cargo build --release && rm -rf src
+
+COPY . .
+RUN rm ./target/release/deps/${SERVICE_NAME}* && cargo build --release
+
+CMD ["/src/target/release/hello_rust"]
