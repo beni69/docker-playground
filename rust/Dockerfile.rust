@@ -1,12 +1,24 @@
+# compile and run in the rust slim image
+# while docker doesnt't recommend the slim image, its only half the size
+# so I think as long as the slim image works, it's a better option
 FROM rust:slim
 
-WORKDIR /src
+#! replace this with the name of the rust project
+ARG APP_NAME="hello_rust"
 
-RUN cargo init
-COPY Cargo.* .
-RUN cargo build --release && rm -rf src
+WORKDIR /usr/src/${APP_NAME}
 
-COPY . .
-RUN rm ./target/release/deps/${SERVICE_NAME}* && cargo build --release
+# build all the dependencies first, before any source code is touched
+RUN USER=root cargo init --bin
+COPY ./Cargo.toml ./Cargo.toml
+RUN cargo build --release \ 
+    && rm -rf src
 
-CMD ["/src/target/release/hello_rust"]
+# now build our code
+ADD . ./
+RUN rm ./target/release/deps/${APP_NAME}* \
+    && cargo build --release
+
+RUN ln -sf /usr/src/${APP_NAME}/target/release/${APP_NAME} /app
+
+CMD [ "/app" ]

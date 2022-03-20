@@ -1,17 +1,36 @@
 # statically link and run on alpine linux
 # doesn't need rust on the host, and the result image will be really small (~5MB+binary)
 # note: musl libc may cause some problems
-
 FROM rust:slim AS builder
 
+# install the tools needed to compile with musl libc
 RUN rustup target add x86_64-unknown-linux-musl
 RUN apt update && apt install -y musl-tools musl-dev
 RUN update-ca-certificates
 
-WORKDIR /src
-COPY . .
+#! replace this with the name of the rust project
+ARG APP_NAME="hello_rust"
+
+WORKDIR /usr/src/${APP_NAME}
+
+# build all the dependencies first, before any source code is touched
+RUN USER=root cargo init --bin
+COPY ./Cargo.toml ./Cargo.toml
+RUN cargo build --target x86_64-unknown-linux-musl --release \ 
+    && rm -rf src
+
+# now build our code
+ADD . ./
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
-FROM alpine
-COPY --from=builder /src/target/x86_64-unknown-linux-musl/release/hello_rust /usr/local/bin/app
-CMD ["app"]
+# WORKDIR /src
+# COPY . .
+# RUN cargo build --target x86_64-unknown-linux-musl --release
+
+# FROM alpine
+# #! replace this with the name of the rust project
+# ARG APP_NAME="hello_rust"
+# COPY --from=builder /src/target/x86_64-unknown-linux-musl/release/${APP_NAME} /app
+# CMD ["/app"]
+
+# TODO: target/musl
