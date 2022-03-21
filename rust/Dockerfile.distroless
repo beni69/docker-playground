@@ -6,7 +6,7 @@ FROM rust:slim as builder
 #! replace this with the name of the rust project
 ARG APP_NAME="hello_rust"
 
-WORKDIR /usr/src/${APP_NAME}
+WORKDIR /src
 
 # build all the dependencies first, before any source code is touched
 RUN USER=root cargo init --bin
@@ -23,6 +23,6 @@ RUN rm ./target/release/deps/${APP_NAME}* \
 FROM gcr.io/distroless/cc
 #! replace this too
 ARG APP_NAME="hello_rust"
-COPY --from=builder /usr/src/${APP_NAME}/target/release/${APP_NAME} /app
+COPY --from=builder /src/target/release/${APP_NAME} /app
 
 CMD ["/app"]

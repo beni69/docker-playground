@@ -6,7 +6,7 @@ FROM rust:slim
 #! replace this with the name of the rust project
 ARG APP_NAME="hello_rust"
 
-WORKDIR /usr/src/${APP_NAME}
+WORKDIR /src
 
 # build all the dependencies first, before any source code is touched
 RUN USER=root cargo init --bin
@@ -19,6 +19,6 @@ ADD . ./
 RUN rm ./target/release/deps/${APP_NAME}* \
     && cargo build --release
 
-RUN ln -sf /usr/src/${APP_NAME}/target/release/${APP_NAME} /app
+RUN ln -sf /src/target/release/${APP_NAME} /app
 
 CMD [ "/app" ]

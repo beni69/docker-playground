@@ -11,7 +11,7 @@ RUN update-ca-certificates
 #! replace this with the name of the rust project
 ARG APP_NAME="hello_rust"
 
-WORKDIR /usr/src/${APP_NAME}
+WORKDIR /src
 
 # build all the dependencies first, before any source code is touched
 RUN USER=root cargo init --bin
@@ -21,16 +21,11 @@ RUN cargo build --target x86_64-unknown-linux-musl --release \
 
 # now build our code
 ADD . ./
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN rm ./target/x86_64-unknown-linux-musl/release/deps/${APP_NAME}* \
+    && cargo build --target x86_64-unknown-linux-musl --release
 
-# WORKDIR /src
-# COPY . .
-# RUN cargo build --target x86_64-unknown-linux-musl --release
-
-# FROM alpine
-# #! replace this with the name of the rust project
-# ARG APP_NAME="hello_rust"
-# COPY --from=builder /src/target/x86_64-unknown-linux-musl/release/${APP_NAME} /app
-# CMD ["/app"]
-
-# TODO: target/musl
+FROM alpine
+#! replace this with the name of the rust project
+ARG APP_NAME="hello_rust"
+COPY --from=builder /src/target/x86_64-unknown-linux-musl/release/${APP_NAME} /app
+CMD ["/app"]
