@@ -7,5 +7,7 @@ the example rust app from
 dockerfiles and scripts
 
 ## image sizes
-- [Rust slim image](Dockerfile.distroless): 806MB
-- [Distroless cc image](Dockerfile.distroless): 26MB (+ 806MB builder)
+- [Rust slim image](Dockerfile.distroless): 787M, 43.8s
+- [Distroless cc image](Dockerfile.distroless): 26MB, 44.8s
+- [Alpine](Dockerfile.alpine): 9.43M, 46.8s
+- [Scratch](Dockerfile.scratch): 3.86M, 52.2s

@@ -4,9 +4,9 @@ an example hello world express server in javascript
 
 ## image sizes
 
--   [Regular node image](Dockerfile.node): 909MB
--   [Alpine node image](Dockerfile.alpine): 114MB
--   [Distroless node image](Dockerfile.distroless): 118MB (+909MB builder)
+-   [Regular node image](Dockerfile.node): 910MB, 18.4s
+-   [Alpine node image](Dockerfile.alpine): 115MB, 5.8s
+-   [Distroless node image](Dockerfile.distroless): 119MB, 21.2s
 
 ## conclusion
 
