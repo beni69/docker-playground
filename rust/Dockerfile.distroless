@@ -10,7 +10,7 @@ WORKDIR /src
 
 # build all the dependencies first, before any source code is touched
 RUN USER=root cargo init --bin
-COPY ./Cargo.toml ./Cargo.toml
+COPY ./Cargo.* ./
 RUN cargo build --release \ 
     && rm -rf src
 

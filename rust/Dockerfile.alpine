@@ -15,7 +15,7 @@ WORKDIR /src
 
 # build all the dependencies first, before any source code is touched
 RUN USER=root cargo init --bin
-COPY ./Cargo.toml ./Cargo.toml
+COPY ./Cargo.* ./
 RUN cargo build --target x86_64-unknown-linux-musl --release \ 
     && rm -rf src
 
