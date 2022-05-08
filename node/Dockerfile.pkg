@@ -10,7 +10,7 @@ RUN yarn install
 
 COPY . .
 
-RUN npx pkg . -o /app/server --compress gzip -t node16-linuxstatic
+RUN npx pkg . -o /app/server --compress brotli -t node16-linuxstatic
 
 
 FROM scratch
