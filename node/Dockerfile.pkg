@@ -1,0 +1,19 @@
+FROM node:lts as builder
+
+RUN npm i -g pkg
+
+WORKDIR /app
+COPY package*.json .
+COPY yarn.lock .
+
+RUN yarn install
+
+COPY . .
+
+RUN npx pkg . -o /app/server --compress gzip -t node16-linuxstatic
+
+
+FROM scratch
+COPY --from=builder /app/server /app
+EXPOSE 8080
+CMD ["/app"]
